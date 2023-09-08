@@ -29,23 +29,44 @@ string exec(string command) {
     pclose(pipe);
     return result;
 }
-int NewKlik(string name) {
-    json klik;
-    ofstream outfile(name+".klik.json");
-    
-    json desc;
-    desc["name"]=name;
-    const auto now=chrono::system_clock::now();
-    
-    desc["timestamp"]=chrono::duration_cast<std::chrono::seconds>(
-                   now.time_since_epoch()).count();
-    string whoami=exec("whoami");
-    whoami.erase(whoami.end()-1,whoami.end());
-    desc["creator"]=whoami;
-    cout << desc.dump(4);
-    return 0;
-}
+class klik {
+    public:
+        fstream ClassFile;
+        json ClassData;
+        string name;
+        string filename;
+    public: klik() {
+        filename=name+".json";
+        ClassFile(filename);
+    }
+    public: int NewKlik(string name) {
+        
+        json klik;
+        fstream outfile(name+".klik.json");
+        
+        json desc;
+        desc["name"]=name;
+        const auto now=chrono::system_clock::now();
+        
+        desc["timestamp"]=chrono::duration_cast<std::chrono::seconds>(
+                    now.time_since_epoch()).count();
+        string whoami=exec("whoami");
+        whoami.erase(whoami.end()-1,whoami.end());
+        desc["creator"]=whoami;
+
+        klik["desc"]=desc;
+
+        json data;
+        klik["data"]=data;
+        cout << klik.dump(4);
+
+        outfile << klik.dump(4);
+        return 0;
+    }
+};
+
 
 int main(int argc, char * argv[]) {
-    NewKlik("test");
+    klik x;
+    x.NewKlik("test");
 }
